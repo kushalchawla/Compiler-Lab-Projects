@@ -4,7 +4,7 @@ using namespace std;
 static string RE;
 
 //after step 1 
-static std::vector< vector< vector<int> > > NFA;
+static std::vector< vector< set<int> > > NFA;
 static int nfa_start_state;
 static std::set<int> nfa_final_states;
 

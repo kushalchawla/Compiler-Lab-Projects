@@ -1,5 +1,8 @@
 // main file
 #include <iostream>
+#include "regex_to_nfa.h"
+#include "nfa_to_dfa.h"
+#include "dfa_to_mindfa"
 using namespace std;
 
 int main()
