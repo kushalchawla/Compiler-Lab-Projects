@@ -6,3 +6,4 @@ Procedure used--
 1 - RE to NFA using thompson's construction.
 2 - NFA to DFA using subset construction.
 3- minimization of the dfa using hopcroft's algorithm.
+
