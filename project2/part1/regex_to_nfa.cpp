@@ -1,13 +1,26 @@
 //kushal - step 1
 //each nfa is a pair of vector< vector< set<int> >  > and int start state, int(final state)
 //deallocate old nfa's after combining.
+/*
+RE is parsed using the following grammar- 
+precendence order is(highest to lowest) (),*,.,+
+R->PR'
+R'->+PR'|e
+P->DP'
+P'->.DP'|e
+D->VD'
+D'->*D'|e
+V->id|(R)
+
+*/
+
 #include "regex_to_nfa.h"
 #include "shared_data.h"
 
 using namespace std;
 int cur_index=0;
 
-//nfa for a variable
+//create nfa for a variable
 pair< vector< vector< set<int> > >, pair<int,int> > do_id(char ch)
 {
 	int input=(int)ch-97+1;
@@ -20,10 +33,10 @@ pair< vector< vector< set<int> > >, pair<int,int> > do_id(char ch)
 	final.first=matrix;
 	final.second.first=0;
 	final.second.second=1;
-	cout<<"ch is"<<ch<<"sdfd"<<final.second.first<<" "<<final.second.second;
 	return final;	
 }
-//plus operation
+
+//combine 2 NFAs according to + operator
 pair< vector< vector< set<int> > >, pair<int,int> > do_plus( pair< vector< vector< set<int> > >, pair<int,int> > A, pair< vector< vector< set<int> > >, pair<int,int> > B)
 {
 
@@ -48,12 +61,10 @@ pair< vector< vector< set<int> > >, pair<int,int> > do_plus( pair< vector< vecto
 		{
 			if(final[i][j].size()>0)
 			{
-				//int l3=final[i][j].size();
 				set<int>::iterator it;
 				set<int> temp;
 				for(it=final[i][j].begin();it!=final[i][j].end();it++)
 				{
-					//*it= *it + l1;
 					temp.insert((*it)+l1);
 				}
 				final[i][j]=temp;
@@ -75,7 +86,7 @@ pair< vector< vector< set<int> > >, pair<int,int> > do_plus( pair< vector< vecto
 	return final1;
 }
 
-//dot operation
+//combine 2 NFAs according to . operator
 pair< vector< vector< set<int> > >, pair<int,int> > do_dot( pair< vector< vector< set<int> > >, pair<int,int> > A, pair< vector< vector< set<int> > >, pair<int,int> > B)
 {
 	pair< vector< vector< set<int> > >, pair<int,int> > final1;
@@ -96,12 +107,10 @@ pair< vector< vector< set<int> > >, pair<int,int> > do_dot( pair< vector< vector
 		{
 			if(final[i][j].size()>0)
 			{
-				//int l3=final[i][j].size();
 				set<int>::iterator it;
 				set<int> temp;
 				for(it=final[i][j].begin();it!=final[i][j].end();it++)
 				{
-					//*it= *it + l1;
 					temp.insert((*it)+l1);
 				}
 				final[i][j]=temp;
@@ -115,7 +124,7 @@ pair< vector< vector< set<int> > >, pair<int,int> > do_dot( pair< vector< vector
 	return final1;
 }
 
-//star operation
+//create NFA corresponding to * operation
 pair< vector< vector< set<int> > >, pair<int,int> > do_star( pair< vector< vector< set<int> > >, pair<int,int> > A)
 {
 	pair< vector< vector< set<int> > >, pair<int,int> > final1;
@@ -164,7 +173,6 @@ void re_to_nfa()
 
 pair< vector< vector< set<int> > >, pair<int,int> > R()
 {
-	cout<<"R\n";
 	if(cur_index<RE.size())
 	{
 		if(RE[cur_index]=='(' || (RE[cur_index]>='a' && RE[cur_index]<='z'))
@@ -173,7 +181,6 @@ pair< vector< vector< set<int> > >, pair<int,int> > R()
 			pair< vector< vector< set<int> > >, pair<int,int> > nfa2;
 			nfa1=P();
 			nfa2=R_prime(nfa1);
-			cout<<"ret"<<endl;
 			return nfa2;
 		}
 		else
@@ -191,40 +198,32 @@ pair< vector< vector< set<int> > >, pair<int,int> > R()
 
 pair< vector< vector< set<int> > >, pair<int,int> > R_prime(pair< vector< vector< set<int> > >, pair<int,int> > A)
 {
-	cout<<"R_prime"<<cur_index<<endl;
-	cout<<"sdfd"<<RE.size()<<endl;
 	if(cur_index<RE.size())
 	{
-		cout<<"gsgs"<<endl;
 		if(RE[cur_index]=='+')
 		{
 			cur_index++;
 			pair< vector< vector< set<int> > >, pair<int,int> > nfa1;
 			nfa1=P();
-			cout<<"dfgdsssssssssss"<<nfa1.second.first<<" "<<nfa1.second.second<<endl;
 			pair< vector< vector< set<int> > >, pair<int,int> > nfa2;
 			nfa2=do_plus(A,nfa1);
 			pair< vector< vector< set<int> > >, pair<int,int> > nfa3;
 			nfa3=R_prime(nfa2);
-			cout<<"fet"<<endl;
 			return nfa3;
 		}
 		else
 		{
-			cout<<"I am here"<<endl;
 			return A;
 		}
 	}
 	else
 	{
-		cout<<"I am here";
 		return A;
 	}
 }
 
 pair< vector< vector< set<int> > >, pair<int,int> > P()
 {
-	cout<<"P"<<cur_index<<endl;
 	if(cur_index<RE.size())
 	{
 		if(RE[cur_index]=='(' || (RE[cur_index]>='a' && RE[cur_index]<='z'))
@@ -250,7 +249,6 @@ pair< vector< vector< set<int> > >, pair<int,int> > P()
 
 pair< vector< vector< set<int> > >, pair<int,int> > P_prime(pair< vector< vector< set<int> > >, pair<int,int> > A)
 {
-	cout<<"P_prime"<<cur_index<<endl;
 	if(cur_index<RE.size())
 	{
 		if(RE[cur_index]=='.')
@@ -277,7 +275,6 @@ pair< vector< vector< set<int> > >, pair<int,int> > P_prime(pair< vector< vector
 
 pair< vector< vector< set<int> > >, pair<int,int> > D()
 {
-	cout<<"D"<<cur_index<<endl;
 	if(cur_index<RE.size())
 	{
 		if(RE[cur_index]=='(' || (RE[cur_index]>='a' && RE[cur_index]<='z'))
@@ -303,7 +300,6 @@ pair< vector< vector< set<int> > >, pair<int,int> > D()
 
 pair< vector< vector< set<int> > >, pair<int,int> > D_prime(pair< vector< vector< set<int> > >, pair<int,int> > A)
 {
-	cout<<"D_prime"<<cur_index<<endl;
 	if(cur_index<RE.size())
 	{
 		if(RE[cur_index]=='*')
@@ -328,7 +324,6 @@ pair< vector< vector< set<int> > >, pair<int,int> > D_prime(pair< vector< vector
 
 pair< vector< vector< set<int> > >, pair<int,int> > V()
 {
-	cout<<"V"<<cur_index<<endl;
 	if(cur_index<RE.size())
 	{
 		if(RE[cur_index]>='a' && RE[cur_index]<='z')
