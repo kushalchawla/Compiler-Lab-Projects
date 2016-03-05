@@ -15,3 +15,4 @@ static std::set<int> dfa_final_states;
 //Final Output
 static std::vector< vector<int> > min_DFA;
 static std::set<int> mindfa_final_states;
+
