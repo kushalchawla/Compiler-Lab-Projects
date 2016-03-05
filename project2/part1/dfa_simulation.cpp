@@ -1,27 +1,14 @@
 //simulating the minimized DFA on an input
 #include "dfa_simulation.h"
 
-string input;
-string output;
-
-void scan_input()
+bool dfa_simulate(string s)
 {
-	cout<<"\nEnter the input :\t";
-	cin>>input;
-}
-
-void simulate_on_dfa()
-{
-	string path = "S0";
-	//path.append(mindfa_start_state);
-	/*for( int i = 0 ; i < input.size() ; i++ )
+	int state=mindfa_start_state,i=0;
+	while(i<s.length())
 	{
-		
-	}*/
-}
-
-void simulate()
-{		
-	scan_input();
-	simulate_on_dfa();
+		state=min_DFA[state][s[i++]];
+	}
+	if (mindfa_final_states.find(state)!=mindfa_final_states.end())
+		return 1;
+	return 0;
 }
