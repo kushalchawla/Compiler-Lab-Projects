@@ -1,7 +1,5 @@
 // nfa to dfa
 #include "nfa_to_dfa.h"
-#include "shared_data.h"
-#include <bits/stdc++.h>
 #define alpha_size 26
 
 using namespace std;
