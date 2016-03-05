@@ -7,3 +7,7 @@ Procedure used--
 2 - NFA to DFA using subset construction.
 3- minimization of the dfa using hopcroft's algorithm.
 
+function names--
+re_to_nfa
+nfa_to_dfa
+dfa_to_mindfa
