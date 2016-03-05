@@ -12,9 +12,12 @@ void scan_input()
 
 void simulate_on_dfa()
 {
-	//string path = "S";
-	path.append(mindfa_start_state);
-	//for(int i=0;i<)
+	string path = "S0";
+	//path.append(mindfa_start_state);
+	/*for( int i = 0 ; i < input.size() ; i++ )
+	{
+		
+	}*/
 }
 
 void simulate()
