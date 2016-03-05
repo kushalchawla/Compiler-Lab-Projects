@@ -29,7 +29,7 @@ o Input/Output commands
 o Recursion.
 
 
- Part 1 
+Part 1 
 
 Write a C program to do the following: 
 
@@ -41,7 +41,7 @@ In addition, we must write a program to simulate the DFA on any
 
 possible input.
 
-  Part 2
+Part 2
 
 Write the grammar(tentative) for the language we will design. The
 
