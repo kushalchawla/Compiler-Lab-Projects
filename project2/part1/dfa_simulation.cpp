@@ -1,6 +1,6 @@
 //simulating the minimized DFA on an input
 #include "dfa_simulation.h"
-
+#include "shared_data.h"
 bool dfa_simulate(string s)
 {
 	int state=mindfa_start_state,i=0;

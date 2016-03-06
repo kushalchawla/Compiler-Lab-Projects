@@ -1,7 +1,10 @@
 	//dfa to min dfa
 
 	#include "dfa_to_mindfa.h" 
-	
+	#include <vector>
+	#include <iostream>
+	#include "shared_data.h"
+	using namespace std;
 	#define len 26
 	bool distinct[5001][5001];
 	bool comp(int i,int j)
@@ -100,3 +103,26 @@
 		}
 		
 	}
+
+void print_mindfa_matrix()
+{
+	cout<<"\n\tE\t";
+
+	for(int i=1; i<=len; i++)
+	{
+		cout<<char((int)'a'+i-1)<<"\t";
+	}
+
+	cout<<endl;
+
+	for(int i=0;i<min_DFA.size();i++)
+	{
+		cout<<"\n\t";
+		for(int j=0;j<=len;j++)
+		{
+			cout<<"S"<<min_DFA[i][j]<<"\t";
+		}		
+	}
+
+	cout<<endl;
+}

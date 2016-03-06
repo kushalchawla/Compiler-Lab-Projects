@@ -1,10 +1,9 @@
 //nfa to dfa header
-#include "shared_data.h"
-#include <bits/stdc++.h>
+#include <vector>
 
+using namespace std;
 //function to calculate epsilon closure of a 'set of states'
 vector<int> epsilon_closure ( vector<int>);
-
 
 // function to find the set of states obtained from a 'set of 
 // states' on an 'input' 

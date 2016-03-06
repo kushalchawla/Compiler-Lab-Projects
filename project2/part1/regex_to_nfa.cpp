@@ -16,9 +16,12 @@ V->id|(R)
 
 #include "regex_to_nfa.h"
 #include "shared_data.h"
-
+#include <iostream>
+#include <cstdlib>
 using namespace std;
 int cur_index=0;
+
+
 
 //create nfa for a variable
 pair< vector< vector< set<int> > >, pair<int,int> > do_id(char ch)
@@ -169,6 +172,8 @@ void re_to_nfa()
 	nfa_start_state=nfa1.second.first;
 	nfa_final_states.insert(nfa1.second.second);
 	cout<<"RE converted to NFA successfully!"<<endl;
+	cout<<nfa1.second.first<<endl;
+	cout<<nfa1.second.second<<endl;
 }
 
 pair< vector< vector< set<int> > >, pair<int,int> > R()
@@ -366,6 +371,8 @@ pair< vector< vector< set<int> > >, pair<int,int> > V()
 void pmat()
 {
 	cout<<"Printing NFA"<<endl;
+	//cout<<NFA.size()<<endl;
+	
 	for(int i=0;i<NFA.size();i++)
 	{
 		cout<<" state- "<<i<<endl;
@@ -381,6 +388,4 @@ void pmat()
 			cout<<endl;
 		}
 	}
-	cout<<endl;
-
 }

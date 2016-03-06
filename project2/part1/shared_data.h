@@ -1,20 +1,24 @@
 
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
+#include <vector>
+#include <set>
+#include <utility>
+#include <string>
 using namespace std;
 //INPUT
-static string RE;
+extern string RE;
 
 //after step 1 
-static std::vector< vector< set<int> > > NFA;
-static int nfa_start_state;
-static std::set<int> nfa_final_states;
+extern std::vector< vector< set<int> > > NFA;
+extern int nfa_start_state;
+extern std::set<int> nfa_final_states;
 
 //after step 2
-static std::vector< vector<int> > DFA;
-static int dfa_start_state;	
-static std::set<int> dfa_final_states;
+extern std::vector< vector<int> > DFA;
+extern int dfa_start_state;	
+extern std::set<int> dfa_final_states;
 
 //Final Output
-static std::vector< vector<int> > min_DFA;
-static int mindfa_start_state;
-static std::set<int> mindfa_final_states;
+extern std::vector< vector<int> > min_DFA;
+extern int mindfa_start_state;
+extern std::set<int> mindfa_final_states;

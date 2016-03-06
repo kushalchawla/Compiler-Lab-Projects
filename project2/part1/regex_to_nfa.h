@@ -1,5 +1,8 @@
 //kushal - step 1 header
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
+#include <vector>
+#include <set>
+#include <utility>
 using namespace std;
 void re_to_nfa();
 void pmat();

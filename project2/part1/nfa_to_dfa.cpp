@@ -1,7 +1,9 @@
 // nfa to dfa
 #include "nfa_to_dfa.h"
-#define alpha_size 26
-
+#include "shared_data.h"
+#define alpha_size 5
+#include <map>
+#include <iostream>
 using namespace std;
 
 // function to find the epsilon closure of a set of states
@@ -183,5 +185,13 @@ void print_dfa_matrix()
 		}		
 	}
 
+	cout<<endl;
+
+	cout<<"start state of dfa : "<<dfa_start_state<<endl;
+
+	for(set<int>::iterator it = dfa_final_states.begin(); it != dfa_final_states.end(); it++)
+	{
+		cout<<*it<<",";
+	}
 	cout<<endl;
 }
