@@ -28,24 +28,32 @@ int main()
 {
 	string s;
 	re_to_nfa();
-	cout<<"re to nfa done -- ";
+	cout<<"re to nfa done\n";
 	
 	pmat();
-	//cout<<"by aj"<<endl;
-	//pmat11();
 	nfa_to_dfa();
-	cout<<"nfa to dfa done--"<<endl;
+	cout<<"nfa to dfa done\n";
 	print_dfa_matrix();
-	/*
+
 	dfa_to_mindfa();
-	cout<<"dfa to mindfa done. "<<endl;
+	cout<<"dfa to mindfa done.\n";
 	print_mindfa_matrix();
 	//final answer is in min_DFA 2d matrix...
-	cout<<"Conversion done successfully!"<<endl;
-	//dfa_to_mindfa();
-	cout<<"\nEnter input string."<<endl;
-	bool result = dfa_simulate(s);
-	cout<<"result is - "<<result<<endl;
-	*/
+	string r;
+		
+	while(1)
+	{
+		cout<<"\nEnter input string."<<endl;
+		cin >> s;
+		bool result = dfa_simulate(s);
+		if(result)
+			cout << "present";
+		else
+			cout << "not present";
+		cout <<"\n Continue(y/n)?";
+		cin >> r;
+		if(r[0]=='n')
+			break;
+	}
 	return 0;
 }
