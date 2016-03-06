@@ -1,7 +1,7 @@
 // nfa to dfa
 #include "nfa_to_dfa.h"
 #include "shared_data.h"
-#define alpha_size 5
+
 #include <map>
 #include <iostream>
 using namespace std;
