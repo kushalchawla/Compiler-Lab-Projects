@@ -30,7 +30,7 @@ int main()
 	re_to_nfa();
 	cout<<"re to nfa done\n";
 	
-	pmat();
+	//pmat();
 	nfa_to_dfa();
 	cout<<"nfa to dfa done\n";
 	print_dfa_matrix();
@@ -43,14 +43,14 @@ int main()
 		
 	while(1)
 	{
-		cout<<"\nEnter input string."<<endl;
+		cout<<"\nEnter input string. (` for epsilon)"<<endl;
 		cin >> s;
 		bool result = dfa_simulate(s);
 		if(result)
 			cout << "present";
 		else
 			cout << "not present";
-		cout <<"\n Continue(y/n)?";
+		cout <<"\n Continue(y/n)?\n ";
 		cin >> r;
 		if(r[0]=='n')
 			break;

@@ -107,7 +107,7 @@ void print_mindfa_matrix()
 {
 	cout<<"\n\tE\t";
 
-	for(int i=1; i<=len; i++)
+	for(int i=1; i<=alpha_size; i++)
 	{
 		cout<<char((int)'a'+i-1)<<"\t";
 	}

@@ -7,7 +7,7 @@
 using namespace std;
 //INPUT
 extern string RE;
-# define alpha_size 26
+# define alpha_size 6
 //after step 1 
 extern std::vector< vector< set<int> > > NFA;
 extern int nfa_start_state;
