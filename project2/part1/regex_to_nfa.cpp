@@ -171,9 +171,7 @@ void re_to_nfa()
 	NFA=nfa1.first;
 	nfa_start_state=nfa1.second.first;
 	nfa_final_states.insert(nfa1.second.second);
-	cout<<"RE converted to NFA successfully!"<<endl;
-	cout<<nfa1.second.first<<endl;
-	cout<<nfa1.second.second<<endl;
+	
 }
 
 pair< vector< vector< set<int> > >, pair<int,int> > R()

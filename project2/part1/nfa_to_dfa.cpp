@@ -177,7 +177,7 @@ void nfa_to_dfa ()
 
 void print_dfa_matrix()
 {
-	cout<<"\n\t\tE\t";
+	cout<<"\nstates \t";
 
 	for(int i=1; i<=alpha_size; i++)
 	{
@@ -189,8 +189,8 @@ void print_dfa_matrix()
 	for(int i=0;i<DFA.size();i++)
 	{
 		//cout<<"ajinkya";
-		cout<<"\n\tS"<<i<<"\t";
-		for(int j=0;j<=alpha_size;j++)
+		cout<<"\nS"<<i<<"\t";
+		for(int j=1;j<=alpha_size;j++)
 		{
 			cout<<"S"<<DFA[i][j]<<"\t";
 		}		
@@ -202,7 +202,7 @@ void print_dfa_matrix()
 	cout<<"\nfinal states of dfa : ";
 	for(set<int>::iterator it = dfa_final_states.begin(); it != dfa_final_states.end(); it++)
 	{
-		cout<<*it<<",";
+		cout<<*it<<",\n\n";
 	}
-	cout<<endl<<endl;
+	
 }
