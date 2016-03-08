@@ -1,0 +1,49 @@
+S -> S’; S| epsilon 
+S’-> var DV | prototype PF | def DF
+
+DV -> int id; | bool id;
+
+PF -> int FF |  bool FF
+FF-> id ( PARAM );
+PARAM->int id PP | bool id PP
+PP-> , PARAM | epsilon
+
+
+DF -> id ( PARAM ) begin stmt_list return V; end
+
+stmt_list -> stmt stmt_list | epsilon
+stmt -> assign id = E_or_C; | scan id; | print V1; | while expr begin stmt_list end | if expr begin 
+stmt_list end
+
+E_or_C -> expr | call id ( PARAM’ );
+
+PARAM’ -> V PP’ 
+PP’->, PARAM’ | epsilon
+
+V -> num | id
+V1-> id | num | space | endl
+num -> numnum | ~ numnum
+id -> idid | ~ idid
+
+expr -> O E’
+E’ -> |(or waala) O E’ |(separator) e
+
+O -> A O’
+O’-> &A O’ | e
+
+A-> MA’
+A’ -> % M A’ | e
+
+M -> G M’
+M’ ->  > G M’ | e
+
+G -> L G’
+G’ -> < L G’ | e
+
+L -> AS L’
+L’ -> + AS L’ | - AS L’ | e
+
+AS -> MD AS’
+AS’-> * MD AS’ | / MD AS’ | e
+
+MD -> num | id | (expr) 
