@@ -28,6 +28,7 @@ then									printf("< then , - >\n");
 ">"										printf("< > , - >\n");	
 "<"										printf("< < , - >\n");
 "+"										printf("< + , - >\n");
+"-"										printf("< - , - >\n");
 "*"										printf("< * , - >\n");
 "/"										printf("< / , - >\n");
 ";"										printf("< ; , - >\n");

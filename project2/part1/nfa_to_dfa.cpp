@@ -202,7 +202,7 @@ void print_dfa_matrix()
 	cout<<"\nfinal states of dfa : ";
 	for(set<int>::iterator it = dfa_final_states.begin(); it != dfa_final_states.end(); it++)
 	{
-		cout<<*it<<",\n\n";
+		cout<<*it<<",\t";
 	}
-	
+	cout<<endl;	
 }

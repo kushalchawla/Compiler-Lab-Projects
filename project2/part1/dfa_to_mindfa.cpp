@@ -130,7 +130,8 @@ void print_mindfa_matrix()
 	cout<<"\nfinal states of min dfa : ";
 	for(set<int>::iterator it = mindfa_final_states.begin(); it != mindfa_final_states.end(); it++)
 	{
-		cout<<*it<<",\n\n";
+		cout<<*it<<",\t";
 	}
+	cout<<endl;
 	
 }

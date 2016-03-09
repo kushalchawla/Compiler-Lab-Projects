@@ -1,0 +1,5 @@
+Identification of Tokens - 
+
+1. We have considered all keywords and operators as different tokens.
+2. A sequence of digits of the form [0-9]+ is mapped to "num".
+3. A variable name of the form [_a-zA-Z][_a-zA-Z0-9]* is mapped to "id".
