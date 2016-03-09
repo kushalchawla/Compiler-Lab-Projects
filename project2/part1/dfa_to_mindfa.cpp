@@ -5,12 +5,11 @@
 	#include <iostream>
 	#include "shared_data.h"
 	using namespace std;
-	#define len 26
 	bool distinct[5001][5001];
 	bool comp(int i,int j)
 	{
 		int in;
-		for(in=1;in<len+1;in++)
+		for(in=1;in<alpha_size+1;in++)
 		{
 			if(distinct[DFA[i][in]][DFA[j][in]])
 				return 1;	
@@ -81,7 +80,7 @@
 		
 		vector<int> trans;
 		vector <int> empt;
-		for(i=0;i<len+1;i++)
+		for(i=0;i<alpha_size+1;i++)
 			empt.push_back(-1);
 
 
@@ -93,7 +92,7 @@
 				if(dfa_final_states.find(i)!=dfa_final_states.end())
 					mindfa_final_states.insert(i);
 				trans.push_back(i);
-				for(j=1;j<len+1;j++)
+				for(j=1;j<alpha_size+1;j++)
 					trans.push_back(parent[DFA[i][j]]);
 				min_DFA.push_back(trans);
 				
@@ -106,9 +105,9 @@
 
 void print_mindfa_matrix()
 {
-	cout<<"\n\tE\t";
+	cout<<"\nstates\t";
 
-	for(int i=1; i<=len; i++)
+	for(int i=1; i<=alpha_size; i++)
 	{
 		cout<<char((int)'a'+i-1)<<"\t";
 	}
@@ -117,12 +116,21 @@ void print_mindfa_matrix()
 
 	for(int i=0;i<min_DFA.size();i++)
 	{
-		cout<<"\n\t";
-		for(int j=0;j<=len;j++)
+		if(min_DFA[i][1]!=-1)
 		{
-			cout<<"S"<<min_DFA[i][j]<<"\t";
+			cout<<"\nS" << i << "\t";
+			for(int j=1;j<=alpha_size;j++)
+			{
+				cout<<"S"<<min_DFA[i][j]<<"\t";
+			}
 		}		
 	}
 
-	cout<<endl;
+	cout<<"\nstart state of min dfa : "<<mindfa_start_state;
+	cout<<"\nfinal states of min dfa : ";
+	for(set<int>::iterator it = mindfa_final_states.begin(); it != mindfa_final_states.end(); it++)
+	{
+		cout<<*it<<",\n\n";
+	}
+	
 }

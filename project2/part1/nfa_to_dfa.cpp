@@ -1,7 +1,7 @@
 // nfa to dfa
 #include "nfa_to_dfa.h"
 #include "shared_data.h"
-#define alpha_size 5
+
 #include <map>
 #include <iostream>
 using namespace std;
@@ -90,9 +90,20 @@ void nfa_to_dfa ()
 
 	cur_states = epsilon_closure (NFA_start_set);	//epsilon closure of start state
 
+	for (std::set<int>::iterator it2 = cur_states.begin() ; it2 != cur_states.end(); ++it2)
+	{
+		if( nfa_final_states.find(*it2) != nfa_final_states.end() )
+		{
+			dfa_final_states.insert(val);
+			break;
+		}
+	}
+
 	ND.insert( std::pair<set<int>,int>( cur_states, val ) );
 	unmarked_DN.insert( std::pair<int,set<int> >( val++, cur_states ) );
 	DFA.push_back(new_state);
+
+	
 
 	while(flag_unmarked)
 	{
@@ -104,7 +115,7 @@ void nfa_to_dfa ()
 				next_states = epsilon_closure( move ( it->second, input ) );	
 				//cout<<endl<<it->first<<" "<<input<<" "<<next_states.size()<<endl;
 				
-				cout<<endl;
+				//cout<<endl;
 
 				if(!next_states.empty())
 				{
@@ -166,7 +177,7 @@ void nfa_to_dfa ()
 
 void print_dfa_matrix()
 {
-	cout<<"\n\tE\t";
+	cout<<"\nstates \t";
 
 	for(int i=1; i<=alpha_size; i++)
 	{
@@ -178,8 +189,8 @@ void print_dfa_matrix()
 	for(int i=0;i<DFA.size();i++)
 	{
 		//cout<<"ajinkya";
-		cout<<"\n\t";
-		for(int j=0;j<=alpha_size;j++)
+		cout<<"\nS"<<i<<"\t";
+		for(int j=1;j<=alpha_size;j++)
 		{
 			cout<<"S"<<DFA[i][j]<<"\t";
 		}		
@@ -187,11 +198,11 @@ void print_dfa_matrix()
 
 	cout<<endl;
 
-	cout<<"start state of dfa : "<<dfa_start_state<<endl;
-
+	cout<<"\nstart state of dfa : "<<dfa_start_state<<endl;
+	cout<<"\nfinal states of dfa : ";
 	for(set<int>::iterator it = dfa_final_states.begin(); it != dfa_final_states.end(); it++)
 	{
-		cout<<*it<<",";
+		cout<<*it<<",\n\n";
 	}
-	cout<<endl;
+	
 }
