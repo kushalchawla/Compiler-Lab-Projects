@@ -988,7 +988,7 @@ printf(" ");
 case 37:
 YY_RULE_SETUP
 #line 44 "code.lex"
-{printf("Error !\n"); return;}
+{printf("Error in '%s' in line %d\n",yytext,yylineno); return;}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP

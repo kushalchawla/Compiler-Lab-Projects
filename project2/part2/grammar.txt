@@ -26,7 +26,8 @@ num -> numnum | ~ numnum
 id -> idid | ~ idid
 
 expr -> O E’
-E’ -> |(or waala) O E’ |(separator) e
+E’ -> | O E’ 
+E' -> e
 
 O -> A O’
 O’-> &A O’ | e

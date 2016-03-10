@@ -41,7 +41,7 @@ then									printf("< then , - >\n");
 [-]{digit}+/[^a-zA-Z]					printf("< num , %s >\n",yytext);
 {digit}+/[^a-zA-Z]						printf("< num , %s >\n",yytext);
 " " 									printf(" ");
-.										{printf("Error !\n"); return;}
+.										{printf("Error in '%s' in line %d\n",yytext,yylineno); return;}
 %%
 
 main()
