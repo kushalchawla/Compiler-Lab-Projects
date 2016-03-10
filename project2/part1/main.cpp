@@ -28,32 +28,51 @@ int main()
 {
 	string s;
 	re_to_nfa();
-	cout<<"re to nfa done\n";
+	cout<<"\nRE TO NFA CONVERSION COMPLETE..\n";
 	
 	//pmat();
 	nfa_to_dfa();
-	cout<<"nfa to dfa done\n";
+	cout<<"\nNFA TO DFA CONVERSION COMPLETE..\n";
 	print_dfa_matrix();
 
 	dfa_to_mindfa();
-	cout<<"dfa to mindfa done.\n";
+	cout<<"\nDFA TO MINIMIZED DFA CONVERSION COMPLETE..\n";
 	print_mindfa_matrix();
 	//final answer is in min_DFA 2d matrix...
-	string r;
-		
-	while(1)
+	char r;
+	int flag = 1;
+
+	while(flag)
 	{
-		cout<<"\nEnter input string. (` for epsilon)"<<endl;
+		cout<<"\n\nENTER THE INPUT STRING (` for epsilon) :"<<endl;
 		cin >> s;
 		bool result = dfa_simulate(s);
 		if(result)
-			cout << "present";
+			cout << "\n\tThe DFA output is YES..\n";
 		else
-			cout << "not present";
-		cout <<"\n Continue(y/n)?\n ";
-		cin >> r;
-		if(r[0]=='n')
-			break;
+			cout << "\n\tThe DFA output is NO..\n";
+		
+		r = 'z';
+		cout <<"\n\t\tDO YOU WANT TO CONTINUE ? (y/n): ";
+
+		while(1)
+		{		
+			cin >> r;
+			if(r == 'n' || r == 'N')
+			{
+				flag = 0;
+				break;
+			}
+
+			if(r == 'y' || r == 'Y')
+			{
+				break;
+			}
+
+			else
+				cout<<"\nINCORRECT CHOICE...TRY AGAIN..\n";
+		}
+
 	}
 	return 0;
 }

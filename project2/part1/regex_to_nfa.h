@@ -1,5 +1,4 @@
-//kushal - step 1 header
-//#include <bits/stdc++.h>
+// step 1 header
 #include <vector>
 #include <set>
 #include <utility>

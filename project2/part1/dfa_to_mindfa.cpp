@@ -105,9 +105,9 @@
 
 void print_mindfa_matrix()
 {
-	cout<<"\nstates\t";
+	cout<<"\n\nSTATES\t";
 
-	for(int i=1; i<=alpha_size; i++)
+	for(int i=1; i<=print_size; i++)
 	{
 		cout<<char((int)'a'+i-1)<<"\t";
 	}
@@ -119,15 +119,15 @@ void print_mindfa_matrix()
 		if(min_DFA[i][1]!=-1)
 		{
 			cout<<"\nS" << i << "\t";
-			for(int j=1;j<=alpha_size;j++)
+			for(int j=1;j<=print_size;j++)
 			{
 				cout<<"S"<<min_DFA[i][j]<<"\t";
 			}
 		}		
 	}
 
-	cout<<"\nstart state of min dfa : "<<mindfa_start_state;
-	cout<<"\nfinal states of min dfa : ";
+	cout<<"\n\n\nSTART STATE OF min DFA : "<<mindfa_start_state;
+	cout<<"\n\nFINAL STATES OF min DFA : ";
 	for(set<int>::iterator it = mindfa_final_states.begin(); it != mindfa_final_states.end(); it++)
 	{
 		cout<<*it<<",\t";

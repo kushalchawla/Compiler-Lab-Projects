@@ -153,7 +153,7 @@ pair< vector< vector< set<int> > >, pair<int,int> > do_star( pair< vector< vecto
 
 void re_to_nfa()
 {
-	cout<<"Enter the regular expression !"<<endl;
+	cout<<"\nEnter the regular expression :"<<endl;
 	cin>>RE;
 	int in_len=RE.size();
 	if(in_len==0)
