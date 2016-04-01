@@ -368,8 +368,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 24
-#define YY_END_OF_BUFFER 25
+#define YY_NUM_RULES 25
+#define YY_END_OF_BUFFER 26
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -379,15 +379,15 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[87] =
     {   0,
-        0,    0,   25,   23,   22,   21,   21,   21,   23,   18,
-       18,   18,   18,   18,   18,   18,   18,   18,   18,   18,
-       18,   18,    0,   17,   20,   20,   18,   18,   18,   18,
-       18,   18,   18,   15,   18,   18,   18,   18,   18,   18,
-       18,   18,   19,   19,   17,   18,   18,   18,   18,    3,
-       18,    4,   18,   18,   18,   18,   18,   18,    1,   18,
-       18,   18,    5,   10,    7,   18,   18,   18,   11,   18,
-       16,   18,   18,    6,   12,   18,   18,   13,   14,    9,
-       18,    8,   18,   18,    2,    0
+        0,    0,   26,   24,   23,   22,   22,   22,   24,   19,
+       19,   19,   19,   19,   19,   19,   19,   19,   19,   19,
+       19,   19,    0,   18,   21,   21,   19,   19,   19,   19,
+       19,   19,   19,   16,   19,   19,   19,   19,   19,   19,
+       19,   19,   20,   20,   18,   19,   19,   19,   19,    3,
+        7,    4,   19,   19,   19,   19,   19,   19,    1,   19,
+       19,   19,    5,   10,   13,   19,   19,   19,   11,   19,
+       17,   19,   19,    6,   12,   19,   19,   14,   15,    9,
+       19,    8,   19,   19,    2,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -405,7 +405,7 @@ static yyconst flex_int32_t yy_ec[256] =
 
        13,   14,   15,   16,   17,    7,    7,   18,    7,   19,
        20,   21,    7,   22,   23,   24,   25,   26,   27,    7,
-       28,    7,    1,    4,    1,    1,    1,    1,    1,    1,
+       28,    7,    1,    4,    1,    4,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -819,7 +819,7 @@ YY_RULE_SETUP
 case 7:
 YY_RULE_SETUP
 #line 15 "file1.lex"
-{ return ENDL;}
+{ return END;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
@@ -849,27 +849,27 @@ YY_RULE_SETUP
 case 13:
 YY_RULE_SETUP
 #line 21 "file1.lex"
-{ return SPACE;}
+{ return ENDL;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 22 "file1.lex"
-{ return WHILE;}
+{ return SPACE;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 23 "file1.lex"
-{ return IF;}
+{ return WHILE;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 24 "file1.lex"
-{ return THEN;}
+{ return IF;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 25 "file1.lex"
-{return ID;}
+{ return THEN;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
@@ -877,13 +877,9 @@ YY_RULE_SETUP
 {return ID;}
 	YY_BREAK
 case 19:
-/* rule 19 can match eol */
-*yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-(yy_c_buf_p) = yy_cp -= 1;
-YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 #line 27 "file1.lex"
-{return NUM;}
+{return ID;}
 	YY_BREAK
 case 20:
 /* rule 20 can match eol */
@@ -896,26 +892,35 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 /* rule 21 can match eol */
+*yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+(yy_c_buf_p) = yy_cp -= 1;
+YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 #line 29 "file1.lex"
-return *yytext;
+{return NUM;}
 	YY_BREAK
 case 22:
+/* rule 22 can match eol */
 YY_RULE_SETUP
 #line 30 "file1.lex"
-; /* skip whitespace */
+return *yytext;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 31 "file1.lex"
-yyerror("invalid character");
+; /* skip whitespace */
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 32 "file1.lex"
+yyerror("invalid character");
+	YY_BREAK
+case 25:
+YY_RULE_SETUP
+#line 33 "file1.lex"
 ECHO;
 	YY_BREAK
-#line 919 "lex.yy.c"
+#line 924 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1913,7 +1918,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 32 "file1.lex"
+#line 33 "file1.lex"
 
 
 int yywrap(void) {

@@ -51,18 +51,19 @@ extern int yydebug;
     INT = 261,
     BOOL = 262,
     BEG = 263,
-    ENDL = 264,
+    END = 264,
     RET = 265,
     ASSIGN = 266,
     CALL = 267,
     SCAN = 268,
     PRINT = 269,
-    SPACE = 270,
-    WHILE = 271,
-    IF = 272,
-    THEN = 273,
-    ID = 274,
-    NUM = 275
+    ENDL = 270,
+    SPACE = 271,
+    WHILE = 272,
+    IF = 273,
+    THEN = 274,
+    ID = 275,
+    NUM = 276
   };
 #endif
 /* Tokens.  */
@@ -72,18 +73,19 @@ extern int yydebug;
 #define INT 261
 #define BOOL 262
 #define BEG 263
-#define ENDL 264
+#define END 264
 #define RET 265
 #define ASSIGN 266
 #define CALL 267
 #define SCAN 268
 #define PRINT 269
-#define SPACE 270
-#define WHILE 271
-#define IF 272
-#define THEN 273
-#define ID 274
-#define NUM 275
+#define ENDL 270
+#define SPACE 271
+#define WHILE 272
+#define IF 273
+#define THEN 274
+#define ID 275
+#define NUM 276
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
