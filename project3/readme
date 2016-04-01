@@ -1,0 +1,3 @@
+a) A parser for the language which identifies multiple syntax errors. 
+
+b) A program to display the syntax tree corresponding to a syntactically correct program.
