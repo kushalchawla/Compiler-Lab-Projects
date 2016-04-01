@@ -1,48 +1,86 @@
-S -> S’; S|epsilon
-S’-> var DV | prototype PF | def DF
-DV -> int id; | bool id;
-PF -> int FF |  bool FF
-FF-> id ( PARAM );
-PARAM->int id PP | bool id PP
-PP-> , PARAM | epsilon
+S: S1 S '\n' { printf("valid\n"); } 
+|
+;
+S1: VAR DV ';' | PROTOTYPE PF ';' | DEF DF 
+;
+DV: INT id | BOOL id 
+;
+PF: INT FF | BOOL FF
+;
+FF: id '(' PARAM ')'
+;
+PARAM: INT id PP | BOOL id PP
+;
+PP: ',' PARAM 
+|
+;
 
+DF: id '(' PARAM ')' BEG stmt_list RET V ';' END
+;
 
-DF -> id ( PARAM ) begin stmt_list return V; end
+stmt_list: stmt stmt_list 
+|
+;
+stmt: ASSIGN id '=' E_or_C ';' | SCAN id ';' | PRINT V1 ';' | WHILE expr BEG stmt_list END | IF expr BEG stmt_list END
+;
+E_or_C: expr | CALL id '(' PARAM1 ')' ';'
+;
+PARAM1: V PP1
+; 
+PP1: ',' PARAM1 
+|
+;
 
-stmt_list -> stmt stmt_list | epsilon
-stmt -> assign id = E_or_C; | scan id; | print V1; | while expr begin stmt_list end | if expr begin 
-stmt_list end
+V: num | id
+;
+V1: id | num | SPACE | ENDL
+;
+num: NUM | '~' NUM
+;
+id: ID | '~' ID	
+;
 
-E_or_C -> expr | call id ( PARAM’ );
+expr: O E1
+;
+E1: '|' O E1 
+|
+;
 
-PARAM’ -> V PP’ 
-PP’->, PARAM’ | epsilon
+O: A O1
+;
+O1: '&' A O1 
+|
+;
 
-V -> num | id
-V1-> id | num | space | endl
-num -> numnum | ~ numnum
-id -> idid | ~ idid	
+A: M A1
+;
+A1: '%' M A1 
+|
+;
 
-expr -> O E’
-E’ -> | O E’ 
-E' -> e
+M: G M1
+;
+M1: '>' G M1
+|
+;
 
-O -> A O’
-O’-> &A O’ | e
+G: L G1
+;
+G1: '<' L G1 
+|
+;
 
-A-> MA’
-A’ -> % M A’ | e
+L: AS L1
+;
+L1: '+' AS L1 | '-' AS L1 
+|
+;
 
-M -> G M’
-M’ ->  > G M’ | e
+AS: MD AS1
+;
+AS1: '*' MD AS1 | '/' MD AS1 
+|
+;
 
-G -> L G’
-G’ -> < L G’ | e
-
-L -> AS L’
-L’ -> + AS L’ | - AS L’ | e
-
-AS -> MD AS’
-AS’-> * MD AS’ | / MD AS’ | e
-
-MD -> num | id | (expr) 
+MD: num | id | '(' expr ')'
+; 
