@@ -1,8 +1,6 @@
-S -> S’; S| epsilon 
+S -> S’; S|epsilon
 S’-> var DV | prototype PF | def DF
-
 DV -> int id; | bool id;
-
 PF -> int FF |  bool FF
 FF-> id ( PARAM );
 PARAM->int id PP | bool id PP
@@ -23,7 +21,7 @@ PP’->, PARAM’ | epsilon
 V -> num | id
 V1-> id | num | space | endl
 num -> numnum | ~ numnum
-id -> idid | ~ idid
+id -> idid | ~ idid	
 
 expr -> O E’
 E’ -> | O E’ 
