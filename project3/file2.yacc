@@ -234,7 +234,8 @@ PARAM: INT id PP
 	$$->children.push_back($3);
 
 
-}| BOOL id PP
+}
+| BOOL id PP
 {
 	$$=new node; 
 	$1= new node;
@@ -439,6 +440,14 @@ PARAM1: V PP1
 	$$->content= "PARAM1";
 	$$->children.push_back($1);
 	$$->children.push_back($2);
+}
+| 
+{
+	$$=new node;
+	$$->content="PARAM1"; 
+	temp = new node;
+	temp->content = "Epsilon";
+	$$->children.push_back(temp);
 }
 ; 
 PP1: ',' PARAM1 

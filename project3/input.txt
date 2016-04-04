@@ -1,1 +1,9 @@
 var int a ;
+prototype int abab ( int papa ) ;
+var int bc ;
+def abab ( int papa )
+begin
+assign a = 23 ;
+assign a = call af ( ) ;
+return bc ;
+end

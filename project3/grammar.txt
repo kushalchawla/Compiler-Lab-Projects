@@ -25,7 +25,7 @@ stmt: ASSIGN id '=' E_or_C ';' | SCAN id ';' | PRINT V1 ';' | WHILE expr BEG stm
 ;
 E_or_C: expr | CALL id '(' PARAM1 ')' ';'
 ;
-PARAM1: V PP1
+PARAM1: V PP1 | epsilon
 ; 
 PP1: ',' PARAM1 
 |
