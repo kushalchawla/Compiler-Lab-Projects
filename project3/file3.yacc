@@ -39,12 +39,12 @@ using namespace std;
 Start: S 
 { printf("valid\n"); 
 $$=new node; 
-root=$$; 
-$$->content="Start"; 
+root=$$;
+$$->content="Start";
 $$->children.push_back($1);
-} 
+}
 ;
-S: S1 S 
+S: S1 S
 {
 $$=new node; 
 $$->content="S"; 

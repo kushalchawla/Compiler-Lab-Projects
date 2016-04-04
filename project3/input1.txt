@@ -4,6 +4,6 @@ var int bc ;
 def int abab ( int papa )
 begin
 assign a = 23 ;
-assign a = call af ( a ) ;
+assign a = call af ( a , b ) ;
 return bc ;
 end

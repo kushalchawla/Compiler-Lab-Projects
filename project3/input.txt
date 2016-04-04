@@ -1,4 +1,4 @@
-def int main ( int c )
+def int main ( int c , int b )
 begin
 	while a + c < b
 	begin
@@ -10,3 +10,4 @@ begin
 	end
 	return 0 ;
 end
+var int a ;
