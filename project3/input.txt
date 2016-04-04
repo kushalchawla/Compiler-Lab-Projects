@@ -1,9 +1,12 @@
-var int a ;
-prototype int abab ( int papa ) ;
-var int bc ;
-def abab ( int papa )
+def int main ( int c )
 begin
-assign a = 23 ;
-assign a = call af ( ) ;
-return bc ;
+	while a + c < b
+	begin
+		print -5 ;
+		if b % c | d > g 
+		begin
+			scan d ;
+		end 
+	end
+	return 0 ;
 end

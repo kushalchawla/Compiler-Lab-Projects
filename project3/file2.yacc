@@ -28,6 +28,7 @@
 			return;
 
 		struct node* temp_node;
+		struct node* parent_node;
 		queue<node*> temp_queue;
 
 		temp_queue = BFS_queue;
@@ -36,19 +37,20 @@
 		while(!temp_queue.empty())
 		{
 			temp_node = temp_queue.front();
+			parent_node = BFS_queue.front();
 			temp_queue.pop();
 			BFS_queue.pop();
 
 			for(int i=0; i < (temp_node->children).size(); i++)
 			{
-				cout<<(temp_node->children[i])->content<<" ";
+				cout<<"{"<<parent_node->content<<"} "<<(temp_node->children[i])->content<<" ";
 				BFS_queue.push(temp_node->children[i]);			
 			}
 
 			cout<<"| ";
 		}
 
-		cout<<endl;
+		cout<<endl<<endl<<endl;
 		print_next_level();
 
  	}
@@ -151,16 +153,32 @@ S1: VAR DV ';'
 
 
 } 
-| DEF DF 
+| DEF INT DF 
 {
 	$$=new node; 
 	$$->content="S1";
 	$1 = new node;
 	$1->content = "DEF";
+	$2=new node;
+	$2->content="INT";
 	$$->children.push_back($1); 
 	$$->children.push_back($2);
+	$$->children.push_back($3);
 
 } 
+|
+| DEF BOOL DF 
+{
+	$$=new node; 
+	$$->content="S1";
+	$1 = new node;
+	$1->content = "DEF";
+	$2=new node;
+	$2->content="BOOL";
+	$$->children.push_back($1); 
+	$$->children.push_back($2);
+	$$->children.push_back($3);
+}
 ;
 
 DV: INT id 
@@ -413,7 +431,7 @@ E_or_C: expr
 	$$->content="E_or_C";
 	$$->children.push_back($1);
 }
-| CALL id '(' PARAM1 ')' ';'
+| CALL id '(' PARAM1 ')'
 {
 	$$=new node; 
 		$$->content="E_or_C";
@@ -428,9 +446,6 @@ E_or_C: expr
 	$5= new node;
 		$5->content= ")";
 		$$->children.push_back($5);
-	$6= new node;
-		$6->content= ";";
-		$$->children.push_back($6);
 
 }
 ;
@@ -818,8 +833,10 @@ MD: num
 
 %%
 void yyerror(char *s) {
- fprintf(stderr, "%s\n", s);
+	extern int yylineno;
+	fprintf(stderr, "At line %d %s\n", yylineno , s);
 }
+
 int main(void) {
  yyparse();
  cout<<"DONE"<<endl; 
