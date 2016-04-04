@@ -4,11 +4,10 @@
 	#include <string>
 	#include <queue>
 	#include<iostream>
-
 	int yylex(void);
+	extern int yylineno;
 	void yyerror(char *);
 	using namespace std;
-
 	int deb=0;
 	
 	struct node
@@ -137,6 +136,32 @@ S1: VAR DV ';'
 	$3->content="Semicolon";
 	$$->children.push_back($3);
 } 
+| VAR DV error
+{
+	cout<<"missing semicolon at line "<<yylineno<<endl;
+	$$=new node; 
+	$$->content="S1";
+	$1 = new node;
+	$1->content = "VAR";
+	$$->children.push_back($1); 
+	$$->children.push_back($2);
+	$3 =new node;
+	$3->content="Semicolon";
+	$$->children.push_back($3);	
+}
+| error DV ';'
+{
+	cout<<"missing var at line "<<yylineno<<endl;
+	$$=new node; 
+	$$->content="S1";
+	$1 = new node;
+	$1->content = "VAR";
+	$$->children.push_back($1); 
+	$$->children.push_back($2);
+	$3 =new node;
+	$3->content="Semicolon";
+	$$->children.push_back($3);	
+}
 | PROTOTYPE PF ';' 
 {
 	$$=new node; 
@@ -148,9 +173,33 @@ S1: VAR DV ';'
 	$3 =new node;
 	$3->content="Semicolon";
 	$$->children.push_back($3);
-
-
 } 
+| PROTOTYPE PF error
+{
+	cout<<"missing semicolon at line "<<yylineno<<endl;
+	$$=new node; 
+	$$->content="S1"; 
+	$1 = new node;
+	$1->content = "PROTOTYPE";
+	$$->children.push_back($1); 
+	$$->children.push_back($2);
+	$3 =new node;
+	$3->content="Semicolon";
+	$$->children.push_back($3);
+}
+| error PF ';'
+{
+	cout<<"missing prototype at line "<<yylineno<<endl;
+	$$=new node; 
+	$$->content="S1"; 
+	$1 = new node;
+	$1->content = "PROTOTYPE";
+	$$->children.push_back($1); 
+	$$->children.push_back($2);
+	$3 =new node;
+	$3->content="Semicolon";
+	$$->children.push_back($3);
+}
 | DEF DF 
 {
 	$$=new node; 
@@ -160,6 +209,16 @@ S1: VAR DV ';'
 	$$->children.push_back($1); 
 	$$->children.push_back($2);
 
+}
+| error DF
+{
+	cout<<"missing def at line "<<yylineno<<endl;
+	$$=new node; 
+	$$->content="S1";
+	$1 = new node;
+	$1->content = "DEF";
+	$$->children.push_back($1); 
+	$$->children.push_back($2);	
 } 
 ;
 
@@ -180,9 +239,7 @@ DV: INT id
 	$1->content="BOOL";
 	$$->children.push_back($1); 
 	$$->children.push_back($2);
-
-
-} 
+}
 ;
 PF: INT FF 
 {
@@ -203,8 +260,6 @@ $1=new node;
 $1->content="BOOL";
 $$->children.push_back($1); 
 $$->children.push_back($2);
-
-
 } 
 
 ;
@@ -221,7 +276,34 @@ FF: id '(' PARAM ')'
 	$4->content=")";
 	$$->children.push_back($4);
 } 
-
+| id '(' PARAM error
+{
+	cout<<"missing ) at line "<<yylineno<<endl;
+	$$=new node; 
+	$$->content="FF"; 
+	$$->children.push_back($1);
+	$2 = new node;
+	$2->content="(";
+	$$->children.push_back($2);
+	$$->children.push_back($3);
+	$4 = new node;
+	$4->content=")";
+	$$->children.push_back($4);	
+}
+| id error PARAM ')'
+{
+	cout<<"missing ( at line "<<yylineno<<endl;
+	$$=new node; 
+	$$->content="FF"; 
+	$$->children.push_back($1);
+	$2 = new node;
+	$2->content="(";
+	$$->children.push_back($2);
+	$$->children.push_back($3);
+	$4 = new node;
+	$4->content=")";
+	$$->children.push_back($4);
+}
 ;
 PARAM: INT id PP
 {
@@ -232,8 +314,6 @@ PARAM: INT id PP
 	$$->children.push_back($1);
 	$$->children.push_back($2);
 	$$->children.push_back($3);
-
-
 }
 | BOOL id PP
 {
@@ -244,8 +324,6 @@ PARAM: INT id PP
 	$$->children.push_back($1);
 	$$->children.push_back($2);
 	$$->children.push_back($3);
-
-
 }
 
 ;
@@ -306,6 +384,117 @@ DF: id '(' PARAM ')' BEG stmt_list RET V ';' END
 	$$->children.push_back($10);
 
 }
+| id '(' PARAM ')' BEG stmt_list RET V error END
+{
+	cout<<"missing semicolon at line "<<yylineno<<endl;
+	$$=new node; 
+	$$->content = "DF";
+	$$->children.push_back($1);
+
+	$2= new node;
+	$2->content = "(";
+	$$->children.push_back($2);
+
+	$$->children.push_back($3);
+
+	$4= new node;
+	$4->content = ")";
+	$$->children.push_back($4);
+
+	$5= new node;
+	$5->content = "BEG";
+	$$->children.push_back($5);
+	
+	$$->children.push_back($6);
+
+	$7= new node;	
+	$7->content = "RET";
+	$$->children.push_back($7);
+
+	$$->children.push_back($8);
+
+	$9= new node;	
+	$9->content = ";";
+	$$->children.push_back($9);
+
+	$10= new node;	
+	$10->content = "END";
+	$$->children.push_back($10);
+}
+| id '(' PARAM ')' error stmt_list RET V ';' END
+{
+	cout<<"missing begin at line "<<yylineno<<endl;
+	$$=new node; 
+	$$->content = "DF";
+	$$->children.push_back($1);
+
+	$2= new node;
+	$2->content = "(";
+	$$->children.push_back($2);
+
+	$$->children.push_back($3);
+
+	$4= new node;
+	$4->content = ")";
+	$$->children.push_back($4);
+
+	$5= new node;
+	$5->content = "BEG";
+	$$->children.push_back($5);
+	
+	$$->children.push_back($6);
+
+	$7= new node;	
+	$7->content = "RET";
+	$$->children.push_back($7);
+
+	$$->children.push_back($8);
+
+	$9= new node;	
+	$9->content = ";";
+	$$->children.push_back($9);
+
+	$10= new node;	
+	$10->content = "END";
+	$$->children.push_back($10);
+}
+| id '(' PARAM ')' BEG stmt_list RET V ';' error
+{
+	cout<<"missing end at line "<<yylineno<<endl;
+	$$=new node; 
+	$$->content = "DF";
+	$$->children.push_back($1);
+
+	$2= new node;
+	$2->content = "(";
+	$$->children.push_back($2);
+
+	$$->children.push_back($3);
+
+	$4= new node;
+	$4->content = ")";
+	$$->children.push_back($4);
+
+	$5= new node;
+	$5->content = "BEG";
+	$$->children.push_back($5);
+	
+	$$->children.push_back($6);
+
+	$7= new node;	
+	$7->content = "RET";
+	$$->children.push_back($7);
+
+	$$->children.push_back($8);
+
+	$9= new node;	
+	$9->content = ";";
+	$$->children.push_back($9);
+
+	$10= new node;	
+	$10->content = "END";
+	$$->children.push_back($10);
+}
 ;
 
 stmt_list: stmt stmt_list 
@@ -316,7 +505,6 @@ stmt_list: stmt stmt_list
 	$$->children.push_back($2);
 
 }
-
 |
 {
 	$$=new node; 
@@ -330,6 +518,40 @@ stmt_list: stmt stmt_list
 stmt: ASSIGN id '=' E_or_C ';' 
 
 {
+	$$=new node; 
+	$$->content="Stmt";
+	$1= new node;
+	$1->content= "ASSIGN";
+	$$->children.push_back($1);
+	$$->children.push_back($2);
+	$3= new node;
+	$3->content= "Equals";
+	$$->children.push_back($3);
+	$$->children.push_back($4);
+	$5= new node;
+	$5->content= "Semicolon";
+	$$->children.push_back($5);
+}
+| error id '=' E_or_C ';'
+{
+	cout<<"missing assign at line "<<yylineno<<endl;
+	$$=new node; 
+	$$->content="Stmt";
+	$1= new node;
+	$1->content= "ASSIGN";
+	$$->children.push_back($1);
+	$$->children.push_back($2);
+	$3= new node;
+	$3->content= "Equals";
+	$$->children.push_back($3);
+	$$->children.push_back($4);
+	$5= new node;
+	$5->content= "Semicolon";
+	$$->children.push_back($5);	
+}
+| ASSIGN id '=' E_or_C error
+{
+	cout<<"missing semicolon at line "<<yylineno<<endl;
 	$$=new node; 
 	$$->content="Stmt";
 	$1= new node;
@@ -359,6 +581,19 @@ stmt: ASSIGN id '=' E_or_C ';'
 
 
 }
+| SCAN id error 
+{
+	cout<<"missing semicolon at line "<<yylineno<<endl;
+	$$=new node; 
+	$$->content="Stmt";
+	$1= new node;
+	$1->content= "SCAN";
+	$$->children.push_back($1);
+	$$->children.push_back($2);
+	$3= new node;
+	$3->content= "Semicolon";
+	$$->children.push_back($3);	
+}
 
 | PRINT V1 ';' 
 {
@@ -372,6 +607,19 @@ stmt: ASSIGN id '=' E_or_C ';'
 	$3->content= "Semicolon";
 	$$->children.push_back($3);
 
+}
+| PRINT V1 error
+{
+	cout<<"missing semicolon at line "<<yylineno<<endl;
+	$$=new node; 
+	$$->content="Stmt";
+	$1= new node;
+	$1->content= "PRINT";
+	$$->children.push_back($1);
+	$$->children.push_back($2);
+	$3= new node;
+	$3->content= "Semicolon";
+	$$->children.push_back($3);	
 }
 | WHILE expr BEG stmt_list END 
 {
@@ -413,7 +661,7 @@ E_or_C: expr
 	$$->content="E_or_C";
 	$$->children.push_back($1);
 }
-| CALL id '(' PARAM1 ')' ';'
+| CALL id '(' PARAM1 ')'
 {
 	$$=new node; 
 		$$->content="E_or_C";
@@ -432,6 +680,46 @@ E_or_C: expr
 		$6->content= ";";
 		$$->children.push_back($6);
 
+}
+| CALL id error PARAM1 ')'
+{
+	cout<<"missing ( at line "<<yylineno<<endl;
+	$$=new node; 
+		$$->content="E_or_C";
+	$1= new node;
+		$1->content= "CALL";
+		$$->children.push_back($1);
+	$$->children.push_back($2);
+	$3= new node;
+		$3->content= "(";
+		$$->children.push_back($3);
+	$$->children.push_back($4);
+	$5= new node;
+		$5->content= ")";
+		$$->children.push_back($5);
+	$6= new node;
+		$6->content= ";";
+		$$->children.push_back($6);
+}
+| CALL id '(' PARAM1 error
+{
+	cout<<"missing ) at line "<<yylineno<<endl;
+	$$=new node; 
+		$$->content="E_or_C";
+	$1= new node;
+		$1->content= "CALL";
+		$$->children.push_back($1);
+	$$->children.push_back($2);
+	$3= new node;
+		$3->content= "(";
+		$$->children.push_back($3);
+	$$->children.push_back($4);
+	$5= new node;
+		$5->content= ")";
+		$$->children.push_back($5);
+	$6= new node;
+		$6->content= ";";
+		$$->children.push_back($6);
 }
 ;
 PARAM1: V PP1
@@ -813,12 +1101,44 @@ MD: num
 	$$->children.push_back($2);
 	$$->children.push_back($3);
 }
+| '(' expr error
+{
+	cout<<"missing ) at line "<<yylineno<<endl;
+	$$ = new node;
+	$$->content = "MD";
+
+	$1 = new node;
+	$1->content = "(";
+	$3 = new node;
+	$3->content = ")";
+
+	$$->children.push_back($1);
+	$$->children.push_back($2);
+	$$->children.push_back($3);	
+}
+| error expr ')'
+{
+	cout<<"missing ( at line "<<yylineno<<endl;
+	$$ = new node;
+	$$->content = "MD";
+
+	$1 = new node;
+	$1->content = "(";
+	$3 = new node;
+	$3->content = ")";
+
+	$$->children.push_back($1);
+	$$->children.push_back($2);
+	$$->children.push_back($3);
+}
 ; 
 
 
 %%
 void yyerror(char *s) {
+ 
  fprintf(stderr, "%s\n", s);
+
 }
 int main(void) {
  yyparse();
