@@ -1,0 +1,7 @@
+Design a target code generator given the parser you have designed in
+Assignment 3 as input. The target code generator should produce MIPS
+assembly code as output. The generated code should be compatible with and
+executable on the MIPS simulation platform SPIM. Also, incorporate type
+(int should be coercible into chars) and nested scope analysis on the
+given input parser. If you cannot handle the entire parser created by you
+in assignment 3, take the largest subset of it that you can handle.
