@@ -1,5 +1,11 @@
-def char main ( )
+prototype int chinmay ( int b , int c , int d  ) ;
+def char main ( int a )
 begin
 	var int abc ;
+	assign abc = call chinmay ( 1 , abc , a ) ;
 	return 0 ;
+end
+def int chinmay ( int b, int c, int d )
+begin
+	return d ;
 end

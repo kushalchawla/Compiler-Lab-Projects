@@ -30,6 +30,7 @@
 		string name;
 		int type; //int 0; char 1, bool 2
 		int val;
+		int offset;
 	};
 
 	int scope = 0;
@@ -47,6 +48,50 @@
 	//
 	#define YYSTYPE node
 
+	int cal_symtab_size()
+	{
+		int size=0;
+		map<int, vector<symtab_entry> >::iterator it;
+
+		for(it=f_symtab.begin(); it != f_symtab.end(); it++)
+		{
+			size = size + it->second.size();
+		}
+
+		return size;
+	}
+
+	int search_symtab(string key)
+	{
+		int temp_scope = scope;
+		while(temp_scope > 0 )
+		{
+			if(f_symtab.find(temp_scope) != f_symtab.end())
+			{
+				for(int i=0; i<f_symtab[temp_scope].size(); i++ )
+				{
+					if(key == f_symtab[temp_scope][i].name)
+						return f_symtab[temp_scope][i].offset;
+				}
+			}
+
+			temp_scope--;
+		}
+		return -1;
+	}
+
+	int search_p_symtab(string key)
+	{
+		for(int i=0;i<p_symtab.size();i++)
+		{
+			//cout<<"**"<<p_symtab[i].name<<endl;
+			//cout<<"###"<<key<<endl;
+			if(p_symtab[i].name == key )
+				return -4*i - 4;
+		}
+
+		return 1;
+	}
 	
 
 %}
@@ -113,6 +158,7 @@ PARAM: INT id
 	symtab_entry new_one;
 	new_one.type=$2.type;
 	new_one.name=$2.name;
+	new_one.offset = 0;
 	p_symtab.push_back(new_one);
 }
 PP 
@@ -123,6 +169,7 @@ PP
 	symtab_entry new_one;
 	new_one.type=$2.type;
 	new_one.name=$2.name;
+	new_one.offset = 0;
 	p_symtab.push_back(new_one);
 }
 PP
@@ -132,6 +179,7 @@ PP
 	symtab_entry new_one;
 	new_one.type=$2.type;
 	new_one.name=$2.name;
+	new_one.offset = 0;
 	p_symtab.push_back(new_one);
 }
 PP
@@ -243,6 +291,7 @@ DV: INT id
 	symtab_entry new_one;
 	new_one.type=$2.type;
 	new_one.name=$2.name;
+	new_one.offset = cal_symtab_size()*4;
 	f_symtab[scope].push_back(new_one);
 	fout<<"li $t0,0\nsw $t0, 0($sp)\naddiu $sp $sp -4\n";
 }
@@ -252,6 +301,7 @@ DV: INT id
 	symtab_entry new_one;
 	new_one.type=$2.type;
 	new_one.name=$2.name;
+	new_one.offset = cal_symtab_size()*4;
 	f_symtab[scope].push_back(new_one);
 	fout<<"li $t0,0\nsw $t0, 0($sp)\naddiu $sp $sp -4\n";
 }
@@ -261,13 +311,19 @@ DV: INT id
 	symtab_entry new_one;
 	new_one.type=$2.type;
 	new_one.name=$2.name;
+	new_one.offset = cal_symtab_size()*4;
 	f_symtab[scope].push_back(new_one);
 	fout<<"li $t0,0\nsw $t0, 0($sp)\naddiu $sp $sp -4\n";
 }
 ;
 E_or_C: expr 
 
-| CALL id '(' PARAM1 ')'
+| CALL id 
+{
+//whether prototyped error checking
+	fout << "sw $fp 0($sp)\n";
+	fout<<"addiu $sp $sp -4\n";
+}'(' PARAM1 ')'
 
 ;
 PARAM1: V PP1
@@ -282,14 +338,46 @@ PP1: ',' PARAM1
 ;
 
 V: num 
-
+{
+	fout<<"li $t0, "<<$1.val<<endl;
+	fout<<"sw $t0, 0($sp)\n";
+	fout<<"addiu $sp $sp -4\n";
+}
 |
  id
+{
+	int offset = search_symtab($1.name);
+	if( offset >= 0)
+	{
+		cout<<"symbol table : "<<$1.name<<endl;
+		fout<<"sw $t0 "<<offset<<"($fp)\n";
+	}
 
+	else
+	{
+		offset = search_p_symtab($1.name);
+		if( offset < 0 )
+		{
+			cout<<"param table : "<<$1.name<<endl;
+			fout<<"sw $t0 "<<offset<<"($fp)\n";
+		}
+
+		else
+		{
+			cout<<"variable "<<$1.name<<" not declared\n";
+			cout<<p_symtab.size()<<endl;
+			cout<<f_symtab.size()<<endl;
+			cout<<f_symtab[1].size()<<endl;
+		}
+	}
+	
+}
 ;
 
 num: NUM 
-
+{
+	$$.val = atoi(yytext);
+}
 ;
 id: ID 
 {
