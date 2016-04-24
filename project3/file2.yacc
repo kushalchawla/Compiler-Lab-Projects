@@ -27,16 +27,22 @@
 			return;
 
 		struct node* temp_node;
+		struct node* parent_node;
 		queue<node*> temp_queue;
 
 		temp_queue = BFS_queue;
 
-		cout<<"| ";
 		while(!temp_queue.empty())
 		{
 			temp_node = temp_queue.front();
+			parent_node = BFS_queue.front();
 			temp_queue.pop();
 			BFS_queue.pop();
+
+			if((temp_node->children).size() > 0)
+			{
+				cout<<"{"<<parent_node->content<<"} ";
+			}
 
 			for(int i=0; i < (temp_node->children).size(); i++)
 			{
@@ -44,10 +50,10 @@
 				BFS_queue.push(temp_node->children[i]);			
 			}
 
-			cout<<"| ";
+			//cout<<" ";
 		}
 
-		cout<<endl;
+		cout<<endl<<endl<<endl;
 		print_next_level();
 
  	}
@@ -59,12 +65,14 @@
 
  		cout<<endl<<"Printing Parse Tree..."<<endl<<endl;
 
- 		cout<<root->content<<endl;
+ 		cout<<root->content<<endl<<endl;
 
  		for(int i=0; i < (root->children).size(); i++)
 		{
 			cout<<(root->children[i])->content<<" ";
 		}
+
+		cout<<endl;
 
 		for(int i=0; i < (root->children).size(); i++)
 		{
@@ -200,25 +208,56 @@ S1: VAR DV ';'
 	$3->content="Semicolon";
 	$$->children.push_back($3);
 }
-| DEF DF 
+| DEF INT DF 
 {
 	$$=new node; 
 	$$->content="S1";
 	$1 = new node;
 	$1->content = "DEF";
+	$2=new node;
+	$2->content="INT";
 	$$->children.push_back($1); 
 	$$->children.push_back($2);
-
+	$$->children.push_back($3);
 }
-| error DF
+| error INT DF
 {
-	cout<<"missing def at line "<<yylineno<<endl;
+	cout<<"missing 'def' at line "<<yylineno<<endl;
 	$$=new node; 
 	$$->content="S1";
 	$1 = new node;
 	$1->content = "DEF";
+	$2=new node;
+	$2->content="INT";
 	$$->children.push_back($1); 
-	$$->children.push_back($2);	
+	$$->children.push_back($2);
+	$$->children.push_back($3);
+} 
+|
+| DEF BOOL DF 
+{
+	$$=new node; 
+	$$->content="S1";
+	$1 = new node;
+	$1->content = "DEF";
+	$2=new node;
+	$2->content="BOOL";
+	$$->children.push_back($1); 
+	$$->children.push_back($2);
+	$$->children.push_back($3);
+}
+| error BOOL DF
+{
+	cout<<"missing 'def' at line "<<yylineno<<endl;
+	$$=new node; 
+	$$->content="S1";
+	$1 = new node;
+	$1->content = "DEF";
+	$2=new node;
+	$2->content="BOOL";
+	$$->children.push_back($1); 
+	$$->children.push_back($2);
+	$$->children.push_back($3);
 } 
 ;
 
@@ -676,9 +715,6 @@ E_or_C: expr
 	$5= new node;
 		$5->content= ")";
 		$$->children.push_back($5);
-	$6= new node;
-		$6->content= ";";
-		$$->children.push_back($6);
 
 }
 | CALL id error PARAM1 ')'
@@ -696,11 +732,7 @@ E_or_C: expr
 	$$->children.push_back($4);
 	$5= new node;
 		$5->content= ")";
-		$$->children.push_back($5);
-	$6= new node;
-		$6->content= ";";
-		$$->children.push_back($6);
-}
+		$$->children.push_back($5);}
 | CALL id '(' PARAM1 error
 {
 	cout<<"missing ) at line "<<yylineno<<endl;
@@ -717,9 +749,6 @@ E_or_C: expr
 	$5= new node;
 		$5->content= ")";
 		$$->children.push_back($5);
-	$6= new node;
-		$6->content= ";";
-		$$->children.push_back($6);
 }
 ;
 PARAM1: V PP1
@@ -1136,10 +1165,14 @@ MD: num
 
 %%
 void yyerror(char *s) {
+
+	extern int yylineno;
+	fprintf(stderr, "At line %d %s\n", yylineno , s);
  
  fprintf(stderr, "%s\n", s);
 
 }
+
 int main(void) {
  yyparse();
  cout<<"DONE"<<endl; 

@@ -1,1 +1,13 @@
+def int main ( int c , int b )
+begin
+	while a + c < b
+	begin
+		print -5 ;
+		if b % c | d > g 
+		begin
+			scan d ;
+		end 
+	end
+	return 0 ;
+end
 var int a ;
