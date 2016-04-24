@@ -1,0 +1,5 @@
+def char main ( )
+begin
+	var int abc ;
+	return 0 ;
+end

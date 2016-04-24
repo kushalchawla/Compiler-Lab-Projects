@@ -5,3 +5,11 @@ executable on the MIPS simulation platform SPIM. Also, incorporate type
 (int should be coercible into chars) and nested scope analysis on the
 given input parser. If you cannot handle the entire parser created by you
 in assignment 3, take the largest subset of it that you can handle.
+
+
+
+0----
+only 1 func....
+int, char, bool...
+
+exprs....
