@@ -1,4 +1,4 @@
-%{								
+%{
 	#include <stdio.h>
 	#include <vector>
 	#include <string>
@@ -118,7 +118,7 @@ Start: S
 S: S1 S 
 {
 	$$=new node; 
-	$$->content="S"; 
+	$$->content="S";
 	$$->children.push_back($1); 
 	$$->children.push_back($2);
 } 
