@@ -1,7 +1,8 @@
 stack pointer initialize
 add errors
 type mismatch wegera
-func caller side
+@@@@@@@@@@@@func caller side
+
 expressions - var defined or not.....type coeribility
 call func return type match
 parameter/variable 2 times error ,variable and parameter same name error 
@@ -17,3 +18,6 @@ search_id(name)
 
 coersion
 array - nhp !
+return value of function not defined
+
+

@@ -22,7 +22,6 @@
 		string name;
 		int type; //int 0; char 1, bool 2
 		int val;
-		int operation; //for expressions
 	};
 
 	void yyerror(char *);
@@ -43,12 +42,9 @@
 	ofstream fout;
 
 	//
-		map<string,int> func_ret_type;
 		set<string> prototyped_functions;
 	//
 	string f_name;
-	int global_frt;
-	int global_fun_no = 0;
 	map< int, vector<symtab_entry> > f_symtab;
 	vector<symtab_entry> p_symtab;
 
@@ -68,7 +64,7 @@
 		return size;
 	}
 
-	int search_symtab(string key, int * x)
+	int search_symtab(string key)
 	{
 		int temp_scope = scope;
 		while(temp_scope > 0 )
@@ -78,137 +74,28 @@
 				for(int i=0; i<f_symtab[temp_scope].size(); i++ )
 				{
 					if(key == f_symtab[temp_scope][i].name)
-					{
-						*x = f_symtab[temp_scope][i].val;
-						return -1 * (f_symtab[temp_scope][i].offset + 4);
-					}
+						return f_symtab[temp_scope][i].offset;
 				}
 			}
 
 			temp_scope--;
 		}
-		return 1;
+		return -1;
 	}
 
-
-	int search_p_symtab(string key, int * x)
+	int search_p_symtab(string key)
 	{
 		for(int i=0;i<p_symtab.size();i++)
 		{
 			//cout<<"**"<<p_symtab[i].name<<endl;
 			//cout<<"###"<<key<<endl;
 			if(p_symtab[i].name == key )
-			{
-				*x = p_symtab[i].val;	
-				return 4*i + 4;
-			}
+				return -4*i - 4;
 		}
-
-		return -1;
-	}
-	
-
-	void search_and_store(string name)
-	{
-		int v;
-		int off= search_symtab(name,&v);
-		if(off<=0)
-		{
-			//fout << "li $t0 " << off <<"\n";
-			fout<< "sw $t0 "<<off<<"($fp)\n";
-			// $$.val=*v;
-		}	
-		else
-		{
-			off = search_p_symtab(name,&v);	
-			if(off > 0)
-			{
-				fout<< "sw $t0 "<<off<<"($fp)\n";
-				// $$.val=*v;
-			}	
-
-			else
-			{
-				cout << "Variable " << name <<" not declared\n";
-			}
-		}
-	}
-
-	void search_and_load(string name)
-	{
-		int v;
-		int off= search_symtab(name,&v);
-		if(off<=0)
-		{
-			fout<< "lw $t0 "<<off<<"($fp)\n";
-
-			//fout<< "sw $t0 "<<off<<"($fp)\n";
-			// $$.val=*v;
-		}	
-		else
-		{
-			off = search_p_symtab(name,&v);	
-			if(off > 0)
-			{
-				fout<< "lw $t0 "<<off<<"($fp)\n";
-				//fout<< "sw $t0 "<<off<<"($fp)\n";
-				// $$.val=*v;
-			}	
-
-			else
-			{
-				cout << "Variable " << name <<" not declared\n";
-			}
-		}
-	}
-
-	symtab_entry get_symtab_entry(string key)
-	{
-		int temp_scope = scope;
-		while(temp_scope > 0 )
-		{
-			if(f_symtab.find(temp_scope) != f_symtab.end())
-			{
-				for(int i=0; i<f_symtab[temp_scope].size(); i++ )
-				{
-					if(key == f_symtab[temp_scope][i].name)
-					{
-						return f_symtab[temp_scope][i];
-					}
-				}
-			}
-
-			temp_scope--;
-		}
-
-		for(int i=0;i<p_symtab.size();i++)
-		{
-			if(p_symtab[i].name == key )
-			{
-				return p_symtab[i];
-			}
-		}
-
-		cout<<"Variable undeclared : "<<key<<endl;
-		exit(0);
-	}
-
-	int comp_arith_op(int first, int second)
-	{
-		if( (first + second) == 3)
-			return 0;
 
 		return 1;
 	}
-
-	int assign_compat(int first, int second)
-	{
-		if( (first + second) == 3)
-			return 0;
-
-		return 1;	
-	}
-
+	
 
 %}
 %token VAR
@@ -231,7 +118,6 @@
 %token THEN
 %token ID
 %token NUM
-%token CH
 %%
 
 Start: S {cout<<"S parsed\n";}
@@ -250,19 +136,9 @@ S1: PROTOTYPE PF ';'
 ;
 
 
-PF: INT 
-{
-	global_frt=0;
-}
-FF
-| BOOL 
-{
-	global_frt=1;
-}FF
-| CHAR 
-{
-	global_frt=2;
-}FF
+PF: INT FF 
+| BOOL FF
+| CHAR FF
 ;
 FF: id '(' PARAM ')'
 {
@@ -275,7 +151,6 @@ FF: id '(' PARAM ')'
 	else
 	{
 		prototyped_functions.insert($1.name);
-		func_ret_type[$1.name]=global_frt;
 		cout<<$1.name<<" function prototyped\n";
 	}
 }
@@ -320,13 +195,6 @@ PP: ',' PARAM
 
 DF: INT id
 {
-	global_fun_no++;
-
-	if(global_fun_no == 1 && $2.name != "main")
-	{
-		cout<<"first function should be main\n";
-		return 0;
-	}
 	cout<<"DF int parsed\n";
 	scope++;
 
@@ -394,7 +262,7 @@ DF1
 }DF1
 
 ;
-DF1: '(' PARAM ')' { reverse(p_symtab.begin(), p_symtab.end()); } BEG stmt_list RET expr ';' END 
+DF1: '(' PARAM ')' { reverse(p_symtab.begin(), p_symtab.end()); } BEG stmt_list RET V ';' END 
 {
 	fout<<"\naddiu $sp $sp "<<4*f_symtab[scope].size()<<"\n";
 	fout<<"lw $ra 4($sp)\n";
@@ -419,25 +287,6 @@ stmt_list: stmt stmt_list
 |
 ;
 stmt: ASSIGN id '=' E_or_C ';' 
-{
-	symtab_entry new_sym=get_symtab_entry($2.name);
-	cout<<"***";
-	cout<<new_sym.name<<" "<<new_sym.type<<endl;
-	cout<<$4.type<<endl;
-	cout<<"***\n";
-	if(assign_compat(new_sym.type,$4.type))
-	{
-		search_and_store($2.name);	
-	}
-	else
-	{
-		cout<<"Not compatible for assignment operation-- "<<$4.type<<" to "<<new_sym.type<<endl;
-		return 0;
-	}
-	
-	
-
-}
 | WHILE expr 
 {
 	if(labels.find(scope)==labels.end())
@@ -527,23 +376,14 @@ DV: INT id
 }
 ;
 E_or_C: expr 
-{
-	$$.type=$1.type;
-}
 
 | CALL id 
 {
-//whether prototyped error checking 
-
-	$$.type=func_ret_type[$2.name];
-
+//whether prototyped error checking
 	fout << "sw $fp 0($sp)\n";
 	fout<<"addiu $sp $sp -4\n";
 }'(' PARAM1 ')'
-{
-	fout<<"jal "<<$2.name<<endl;
 
-}
 ;
 PARAM1: V PP1
 
@@ -562,34 +402,23 @@ V: num
 	fout<<"sw $t0, 0($sp)\n";
 	fout<<"addiu $sp $sp -4\n";
 }
-| ch
-{
-	fout<<"li $t0, "<<$1.val<<endl;
-	fout<<"sw $t0, 0($sp)\n";
-	fout<<"addiu $sp $sp -4\n";	
-}
 |
  id
 {
-	int v;
-	int offset = search_symtab($1.name,&v);
-	if( offset <= 0)
+	int offset = search_symtab($1.name);
+	if( offset >= 0)
 	{
 		cout<<"symbol table : "<<$1.name<<endl;
-		fout<<"lw $t0 "<<offset<<"($fp)\n";
-		fout<<"sw $t0 0($sp)\n";
-		fout<<"addiu $sp $sp -4\n";
+		fout<<"sw $t0 "<<offset<<"($fp)\n";
 	}
 
 	else
 	{
-		offset = search_p_symtab($1.name,&v);
-		if( offset > 0 )
+		offset = search_p_symtab($1.name);
+		if( offset < 0 )
 		{
 			cout<<"param table : "<<$1.name<<endl;
-			fout<<"lw $t0 "<<offset<<"($fp)\n";
-			fout<<"sw $t0 0($sp)\n";
-			fout<<"addiu $sp $sp -4\n";
+			fout<<"sw $t0 "<<offset<<"($fp)\n";
 		}
 
 		else
@@ -609,12 +438,6 @@ num: NUM
 	$$.val = atoi(yytext);
 }
 ;
-
-ch: CH
-{
-	$$.val=(int)yytext[1];
-}
-;
 id: ID 
 {
 	//cout<<"***"<<yytext<<"***"<<endl;
@@ -623,87 +446,72 @@ id: ID
 
 ;
 
-expr: Term Term1
-{
-	if( comp_arith_op( $1.type, $2.type) )
-	{
-		$$.type=min($1.type,$2.type);
-		switch($2.operation)
-		{
-			case 1: fout<<"add $t0 $t0 $t3\n";	
-					break;
+expr: O E1
 
-			case 2: fout<<"sub $t0 $t3 $t0\n";	
-					break;
-
-			case 3: fout<<"mul $t0 $t0 $t3\n";	
-					break;
-
-			case 4: fout<<"div $t0 $t3 $t0\n";	
-					break;
-		}
-	}
-	
-	else
-	{
-		cout<<"Not compatible for arithmetic operation-- "<<$1.type<<" and "<<$2.type<<endl;
-	}
-}
 ;
-
-
-Term1: '+' {fout<<"move $t3 $t0\n";} Term
-{
-	$$.operation = 1;
-	$$.type = $2.type;
-
-}
-
-| '-' {fout<<"move $t3 $t0\n";} Term
-{
-	$$.operation = 2;
-	$$.type = $2.type;
-
-}
-| '*' {fout<<"move $t3 $t0\n";} Term
-{
-	$$.operation = 3;
-	$$.type = $2.type;
-
-}
-
-| '/' {fout<<"move $t3 $t0\n";} Term
-{
-	$$.operation = 4;
-	$$.type = $2.type;
-
-}
+E1: '|' O E1 
 
 |
-{
-	$$.type=10;
-}
+
 ;
 
+O: A O1
 
-Term: id
-{
-	search_and_load($1.name);
-	symtab_entry new_sym=get_symtab_entry($1.name);
-	$$.type=new_sym.type;
-
-}
-| num
-{
-	fout << "li $t0  " <<$1.val <<"\n";
-	$$.type=0;
-}
-| ch
-{
-	fout << "li $t0  " <<$1.val <<"\n";
-	$$.type=1;	
-}
 ;
+O1: '&' A O1
+ 
+|
+
+;
+
+A: M A1
+
+;
+A1: '%' M A1 
+
+|
+
+;
+
+M: G M1
+
+;
+M1: '>' G M1
+
+|
+
+;
+
+G: L G1
+
+;
+G1: '<' L G1 
+
+|
+;
+
+L: AS L1
+;
+L1: '+' AS L1 
+
+| '-' AS L1 
+
+|
+;
+
+AS: MD AS1
+;
+AS1: '*' MD AS1 
+| '/' MD AS1 
+|
+;
+
+MD: num 
+| id 
+| '(' expr ')'
+
+; 
+
 
 %%
 void yyerror(char *s) {

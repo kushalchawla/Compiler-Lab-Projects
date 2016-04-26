@@ -1,11 +1,22 @@
-prototype int chinmay ( int b , int c , int d  ) ;
-def char main ( int a )
+prototype int abc ( int a ) ;
+prototype int func ( int a ) ;
+def int main ( )
 begin
-	var int abc ;
-	assign abc = call chinmay ( 1 , abc , a ) ;
+	var int a ;
+	assign a = 8 * 5 ;
+	assign a = call abc ( a ) ; 
 	return 0 ;
 end
-def int chinmay ( int b, int c, int d )
+def int abc ( int a )
 begin
-	return d ;
+	assign a = call func ( a ) ;
+	return a ;
+end
+def int func ( int a )
+begin
+	if a - 30
+	begin
+		assign a = a / 10 ;
+	end
+	return a - 10 ;
 end

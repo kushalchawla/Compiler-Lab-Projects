@@ -28,6 +28,7 @@ then	{ return THEN;}
 (_|{letter})(_|{letter}|{digit})*		{return ID;}
 [-]{digit}+/[^a-zA-Z]					{return NUM;}
 {digit}+/[^a-zA-Z]						{return NUM;}
+[']{letter}[']							{return CH;}	
 [|&%<>+\-*/;(),=~] return *yytext;
 [ \t\n] ; /* skip whitespace */
 . yyerror("invalid character");

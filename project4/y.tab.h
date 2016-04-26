@@ -64,7 +64,8 @@ extern int yydebug;
     IF = 274,
     THEN = 275,
     ID = 276,
-    NUM = 277
+    NUM = 277,
+    CH = 278
   };
 #endif
 /* Tokens.  */
@@ -88,6 +89,7 @@ extern int yydebug;
 #define THEN 275
 #define ID 276
 #define NUM 277
+#define CH 278
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

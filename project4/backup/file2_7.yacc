@@ -22,7 +22,6 @@
 		string name;
 		int type; //int 0; char 1, bool 2
 		int val;
-		int operation; //for expressions
 	};
 
 	void yyerror(char *);
@@ -43,12 +42,9 @@
 	ofstream fout;
 
 	//
-		map<string,int> func_ret_type;
 		set<string> prototyped_functions;
 	//
 	string f_name;
-	int global_frt;
-	int global_fun_no = 0;
 	map< int, vector<symtab_entry> > f_symtab;
 	vector<symtab_entry> p_symtab;
 
@@ -162,53 +158,6 @@
 		}
 	}
 
-	symtab_entry get_symtab_entry(string key)
-	{
-		int temp_scope = scope;
-		while(temp_scope > 0 )
-		{
-			if(f_symtab.find(temp_scope) != f_symtab.end())
-			{
-				for(int i=0; i<f_symtab[temp_scope].size(); i++ )
-				{
-					if(key == f_symtab[temp_scope][i].name)
-					{
-						return f_symtab[temp_scope][i];
-					}
-				}
-			}
-
-			temp_scope--;
-		}
-
-		for(int i=0;i<p_symtab.size();i++)
-		{
-			if(p_symtab[i].name == key )
-			{
-				return p_symtab[i];
-			}
-		}
-
-		cout<<"Variable undeclared : "<<key<<endl;
-		exit(0);
-	}
-
-	int comp_arith_op(int first, int second)
-	{
-		if( (first + second) == 3)
-			return 0;
-
-		return 1;
-	}
-
-	int assign_compat(int first, int second)
-	{
-		if( (first + second) == 3)
-			return 0;
-
-		return 1;	
-	}
-
 
 %}
 %token VAR
@@ -250,19 +199,9 @@ S1: PROTOTYPE PF ';'
 ;
 
 
-PF: INT 
-{
-	global_frt=0;
-}
-FF
-| BOOL 
-{
-	global_frt=1;
-}FF
-| CHAR 
-{
-	global_frt=2;
-}FF
+PF: INT FF 
+| BOOL FF
+| CHAR FF
 ;
 FF: id '(' PARAM ')'
 {
@@ -275,7 +214,6 @@ FF: id '(' PARAM ')'
 	else
 	{
 		prototyped_functions.insert($1.name);
-		func_ret_type[$1.name]=global_frt;
 		cout<<$1.name<<" function prototyped\n";
 	}
 }
@@ -320,13 +258,6 @@ PP: ',' PARAM
 
 DF: INT id
 {
-	global_fun_no++;
-
-	if(global_fun_no == 1 && $2.name != "main")
-	{
-		cout<<"first function should be main\n";
-		return 0;
-	}
 	cout<<"DF int parsed\n";
 	scope++;
 
@@ -394,7 +325,7 @@ DF1
 }DF1
 
 ;
-DF1: '(' PARAM ')' { reverse(p_symtab.begin(), p_symtab.end()); } BEG stmt_list RET expr ';' END 
+DF1: '(' PARAM ')' { reverse(p_symtab.begin(), p_symtab.end()); } BEG stmt_list RET V ';' END 
 {
 	fout<<"\naddiu $sp $sp "<<4*f_symtab[scope].size()<<"\n";
 	fout<<"lw $ra 4($sp)\n";
@@ -421,10 +352,6 @@ stmt_list: stmt stmt_list
 stmt: ASSIGN id '=' E_or_C ';' 
 {
 	symtab_entry new_sym=get_symtab_entry($2.name);
-	cout<<"***";
-	cout<<new_sym.name<<" "<<new_sym.type<<endl;
-	cout<<$4.type<<endl;
-	cout<<"***\n";
 	if(assign_compat(new_sym.type,$4.type))
 	{
 		search_and_store($2.name);	
@@ -533,17 +460,11 @@ E_or_C: expr
 
 | CALL id 
 {
-//whether prototyped error checking 
-
-	$$.type=func_ret_type[$2.name];
-
+//whether prototyped error checking
 	fout << "sw $fp 0($sp)\n";
 	fout<<"addiu $sp $sp -4\n";
 }'(' PARAM1 ')'
-{
-	fout<<"jal "<<$2.name<<endl;
 
-}
 ;
 PARAM1: V PP1
 
@@ -573,23 +494,19 @@ V: num
 {
 	int v;
 	int offset = search_symtab($1.name,&v);
-	if( offset <= 0)
+	if( offset >= 0)
 	{
 		cout<<"symbol table : "<<$1.name<<endl;
-		fout<<"lw $t0 "<<offset<<"($fp)\n";
-		fout<<"sw $t0 0($sp)\n";
-		fout<<"addiu $sp $sp -4\n";
+		fout<<"sw $t0 "<<offset<<"($fp)\n";
 	}
 
 	else
 	{
 		offset = search_p_symtab($1.name,&v);
-		if( offset > 0 )
+		if( offset < 0 )
 		{
 			cout<<"param table : "<<$1.name<<endl;
-			fout<<"lw $t0 "<<offset<<"($fp)\n";
-			fout<<"sw $t0 0($sp)\n";
-			fout<<"addiu $sp $sp -4\n";
+			fout<<"sw $t0 "<<offset<<"($fp)\n";
 		}
 
 		else
@@ -623,66 +540,81 @@ id: ID
 
 ;
 
-expr: Term Term1
+expr: Term
 {
-	if( comp_arith_op( $1.type, $2.type) )
-	{
-		$$.type=min($1.type,$2.type);
-		switch($2.operation)
-		{
-			case 1: fout<<"add $t0 $t0 $t3\n";	
-					break;
+	fout<<"move $t3 $t0\n";
+	$2.type=$1.type;
+}
 
-			case 2: fout<<"sub $t0 $t3 $t0\n";	
-					break;
-
-			case 3: fout<<"mul $t0 $t0 $t3\n";	
-					break;
-
-			case 4: fout<<"div $t0 $t3 $t0\n";	
-					break;
-		}
-	}
-	
-	else
-	{
-		cout<<"Not compatible for arithmetic operation-- "<<$1.type<<" and "<<$2.type<<endl;
-	}
+Term1
+{
+	$$.type=min($1.type,$2.type);
 }
 ;
 
 
-Term1: '+' {fout<<"move $t3 $t0\n";} Term
+Term1: '+' Term
 {
-	$$.operation = 1;
-	$$.type = $2.type;
-
+	int s_type=$$.type;
+	if(comp_arith_op(s_type,$2.type))
+	{
+		fout<<"add $t0 $t0 $t3\n";	
+	}
+	else
+	{
+		cout<<"Not compatible for arithmetic operation-- "<<s_type<<" and "<<$2.type<<endl;
+		return 0;
+	}
+	$$.type=$2.type;
 }
 
-| '-' {fout<<"move $t3 $t0\n";} Term
+| '-' Term
 {
-	$$.operation = 2;
-	$$.type = $2.type;
-
+	int s_type=$$.type;
+	if(comp_arith_op(s_type,$2.type))
+	{
+		fout<<"sub $t0 $t3 $t0\n";
+	}
+	else
+	{
+		cout<<"Not compatible for arithmetic operation-- "<<s_type<<" and "<<$2.type<<endl;
+		return 0;
+	}
+	$$.type=$2.type;
+	
 }
-| '*' {fout<<"move $t3 $t0\n";} Term
+| '*' Term
 {
-	$$.operation = 3;
-	$$.type = $2.type;
-
+	int s_type=$$.type;
+	if(comp_arith_op(s_type,$2.type))
+	{
+		fout<<"mul $t0 $t0 $t3\n";
+	}
+	else
+	{
+		cout<<"Not compatible for arithmetic operation-- "<<s_type<<" and "<<$2.type<<endl;
+		return 0;
+	}
+	$$.type=$2.type;
+	
 }
 
-| '/' {fout<<"move $t3 $t0\n";} Term
+| '/' Term
 {
-	$$.operation = 4;
-	$$.type = $2.type;
-
+	int s_type=$$.type;
+	if(comp_arith_op(s_type,$2.type))
+	{
+		fout<<"div $t0 $t3 $t0\n";
+	}
+	else
+	{
+		cout<<"Not compatible for arithmetic operation-- "<<s_type<<" and "<<$2.type<<endl;
+		return 0;
+	}
+	$$.type=$2.type;	
 }
 
 |
-{
-	$$.type=10;
-}
 ;
 
 
