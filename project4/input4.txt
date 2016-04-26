@@ -1,0 +1,6 @@
+def int main ( )
+begin
+	var int a ;
+	assign a = 5 + 8 ;
+	return 0 ;
+end

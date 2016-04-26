@@ -1,0 +1,14 @@
+def int main ( )
+begin
+	var int a ;
+	assign a = 10 ;
+	if 3 < 5
+	begin
+		assign a = 8 ;
+	end
+	if a > 6
+	begin
+		assign a = 99 ;
+	end
+	return 0 ;
+end

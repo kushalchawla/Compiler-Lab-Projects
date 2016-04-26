@@ -9,18 +9,33 @@ addiu $sp $sp -4
 li $t0,0
 sw $t0, 0($sp)
 addiu $sp $sp -4
-li $t0  8
+li $t0  10
+sw $t0 -4($fp)
+li $t0  3
 move $t3 $t0
 li $t0  5
-mul $t0 $t0 $t3
+sub $t4 $t3 $t0
+bgez $t4,scope0_label1
+scope0_label1:
+beq $t0,$zero,scope1_label1
+
+li $t0  8
 sw $t0 -4($fp)
-sw $fp 0($sp)
-addiu $sp $sp -4
+scope1_label1:
+addiu $sp $sp 0
+
 lw $t0 -4($fp)
-sw $t0 0($sp)
-addiu $sp $sp -4
-jal abc
+move $t3 $t0
+li $t0  6
+sub $t4 $t0 $t3
+bgez $t4,scope0_label2
+scope0_label2:
+beq $t0,$zero,scope1_label2
+
+li $t0  99
 sw $t0 -4($fp)
+scope1_label2:
+addiu $sp $sp 0
 
 move $t7 $t0
 li $t0  0
@@ -31,57 +46,5 @@ addiu $sp $sp 8
 lw $fp 0($sp)
 li $v0 10
 syscall
-
-
-abc:
-move $fp $sp
-sw $ra 0($sp)
-addiu $sp $sp -4
-
-sw $fp 0($sp)
-addiu $sp $sp -4
-lw $t0 4($fp)
-sw $t0 0($sp)
-addiu $sp $sp -4
-jal func
-sw $t0 4($fp)
-lw $t0 4($fp)
-
-addiu $sp $sp 0
-lw $ra 4($sp)
-addiu $sp $sp 12
-lw $fp 0($sp)
-jr $ra
-
-
-func:
-move $fp $sp
-sw $ra 0($sp)
-addiu $sp $sp -4
-
-lw $t0 4($fp)
-move $t3 $t0
-li $t0  30
-sub $t0 $t3 $t0
-beq $t0,$zero,scope1_label1
-
-lw $t0 4($fp)
-move $t3 $t0
-li $t0  10
-div $t0 $t3 $t0
-sw $t0 4($fp)
-scope1_label1:
-addiu $sp $sp 0
-
-lw $t0 4($fp)
-move $t3 $t0
-li $t0  10
-sub $t0 $t3 $t0
-
-addiu $sp $sp 0
-lw $ra 4($sp)
-addiu $sp $sp 12
-lw $fp 0($sp)
-jr $ra
 
 

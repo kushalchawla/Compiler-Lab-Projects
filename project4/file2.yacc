@@ -427,6 +427,24 @@ stmt: ASSIGN id '=' E_or_C ';'
 	cout<<"***\n";
 	if(assign_compat(new_sym.type,$4.type))
 	{
+		if($2.type==2)
+		{
+			//assign 1 for +ve to $t0
+			/*
+			beq $t0,$zero,L1
+			li $t0 1
+			L1:
+			*/	
+			if(labels.find(0)==labels.end())
+			{
+				labels[0]=0;
+			}
+			labels[0]++;
+			fout<<"beq $t0,$zero,"<<"scope0_label"<<labels[0]<<"\n";
+			fout<"li $t0 1\n";
+			fout<<"scope0_label"<<labels[0]<<":\n";
+
+		}
 		search_and_store($2.name);	
 	}
 	else
@@ -641,6 +659,36 @@ expr: Term Term1
 
 			case 4: fout<<"div $t0 $t3 $t0\n";	
 					break;
+
+			case 5:	if(labels.find(0)==labels.end())
+					{
+						labels[0]=0;
+					}
+					labels[0]++;
+
+					
+					fout<<"sub $t4 $t3 $t0\n";
+					fout<"li $t0 0\n";
+					fout<<"bgez $t4,"<<"scope0_label"<<labels[0]<<"\n";
+					fout<"li $t0 1\n";
+					fout<<"scope0_label"<<labels[0]<<":\n";
+					
+					break;
+
+			case 6: if(labels.find(0)==labels.end())
+					{
+						labels[0]=0;
+					}
+					labels[0]++;
+
+					
+					fout<<"sub $t4 $t0 $t3\n";
+					fout<"li $t0 0\n";
+					fout<<"bgez $t4,"<<"scope0_label"<<labels[0]<<"\n";
+					fout<"li $t0 1\n";
+					fout<<"scope0_label"<<labels[0]<<":\n";
+					
+					break;
 		}
 	}
 	
@@ -679,7 +727,19 @@ Term1: '+' {fout<<"move $t3 $t0\n";} Term
 
 }
 
-|
+| '<' {fout<<"move $t3 $t0\n";} Term
+{
+	$$.operation = 5;
+	$$.type = $2.type;
+
+}
+| '>' {fout<<"move $t3 $t0\n";} Term
+{
+	$$.operation = 6;
+	$$.type = $2.type;
+
+}
+| 
 {
 	$$.type=10;
 }
